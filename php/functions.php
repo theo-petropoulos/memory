@@ -62,10 +62,6 @@
 			if($object[$i]->get_value()==$sent_value){
 				$object[$i]->select_card();
 			}
-			else{
-				echo "Il y a eut une erreur.";
-				return 0;
-			}
 		}
 
 		//S'il n'y a pas de carte 1 en mémoire ( si c'est la première des deux cartes qui est retournée )
