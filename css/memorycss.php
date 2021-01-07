@@ -63,9 +63,9 @@ input[id='?']{
 }
 
 h1,h2,h3, p{
-	font-family:Courier;
+	font-family:Impact;
 	color:#ACD8DF;
-	text-shadow:3px 0 black, 0 3px black;
+	text-shadow:0 1px black, 1px 0 black, -1px 0 black, 0 -1px black;
 }
 
 </style>
