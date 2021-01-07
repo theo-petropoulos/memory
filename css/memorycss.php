@@ -9,7 +9,7 @@ html{
 }
 
 body{
-	background-image:radial-gradient(circle, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.5) 30%, rgba(177,181,189,0) 80%), url(../assets/bg2.png);
+	background-image:url(../assets/bg2.jpg);
 	background-size:100%;
 	position:relative;
 	display:flex;
@@ -20,16 +20,27 @@ body{
 	color:white;
 }
 
+#main_area{
+	display:flex;
+	flex-direction:column;
+	text-align:center;
+	align-items:center;
+}
+
 #game_area{
 	display:flex;
-	width:70%;
+	width:60%;
+	min-width:400px;
 	flex-wrap:wrap;
+	justify-content: center;
 }
 
 #game_area form{
 	display:flex;
-	width:130px;
-	height:200px;
+	flex-grow:1;
+	width:100px;
+	height:155px;
+	margin:0;
 }
 
 #game_area form input{
@@ -37,9 +48,18 @@ body{
 	width:100%;
 }
 
+input[id='?']:hover{
+	cursor:pointer;
+	box-shadow: inset 0 0 0 1000px rgba(255,255,255,.3);
+	border:3px solid rgba(255,255,255,0.2);
+	border-radius:5px;
+}
+
 input[id='?']{
 	background:url('../assets/back.png');
 	background-size:100%;
+	border:3px solid rgba(0,0,0,0.6);
+	border-radius:5px;
 }
 
 h1,h2,h3, p{

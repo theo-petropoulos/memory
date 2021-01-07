@@ -29,9 +29,8 @@
 		return 1;
 	}
 
-	function unset_cards(&$counter, &$object, &$card1, &$card2, &$mismatch){
+	function unset_cards(&$object, &$card1, &$card2, &$mismatch){
 		$mismatch=0;
-		echo "Compteur de coups : " . $counter . "<br>";
 		for($i=0;isset($object[$i]);$i++){
 			if($object[$i]->get_value()==$card1){
 				$object[$i]->unselect_card();
@@ -46,8 +45,6 @@
 
 	function play_turn(&$counter, &$object, &$sent_value, &$card1, &$card2, &$mismatch, $level, $sec, $page){
 		$counter++;
-		echo "Compteur de coups : " . $counter . "<br>";
-
 		for($i=0;isset($object[$i]);$i++){
 			if($object[$i]->get_value()==$sent_value){
 				$object[$i]->select_card();

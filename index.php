@@ -17,7 +17,7 @@
 	}
 
 	if(isset($_SESSION['mismatch']) && $_SESSION['mismatch'] && isset($_SESSION['card1']) && isset($_SESSION['card2'])){
-		unset_cards($_SESSION['play_count'], $_SESSION['deck'], $_SESSION['card1'], $_SESSION['card2'], $_SESSION['mismatch']);
+		unset_cards($_SESSION['deck'], $_SESSION['card1'], $_SESSION['card2'], $_SESSION['mismatch']);
 	}
 
 	if(isset($_POST['check_card']) && $_POST['check_card']){
@@ -101,9 +101,6 @@
 
 				if(isset($_SESSION['ingame']) && $_SESSION['ingame']){
 					if(isset($_SESSION['deck']) && $_SESSION['deck']){
-						if(isset($_SESSION['play_count']) && $_SESSION['play_count']==0){
-							echo "Compteur de coups : " . $_SESSION['play_count'] . "<br>";
-						}
 						?>
 						<section id="game_area">
 							<?php
@@ -170,6 +167,13 @@
 				}?>
 
 		</main>
+
+		<footer>
+			<?php if(isset($_SESSION['play_count'])){
+				?><p><?php echo "Compteur de coups : " . $_SESSION['play_count'] . "<br>";?></p><?php
+			}
+			?>
+		</footer>
 
 	</body>
 </html>
