@@ -78,11 +78,11 @@
 		else if(!isset($card2)){
 			//On attribue la valeur envoyée par l'utilisateur à la carte 2 en mémoire
 			$card2=$sent_value;
-			/*for($i=0;isset($object[$i]);$i++){
+			for($i=0;isset($object[$i]);$i++){
 				if($object[$i]->get_value()==$sent_value){
 					$object[$i]->select_card();
 				}
-			}*/
+			}
 			//On vérifie qu'il y a bien une carte 1 et 2 en mémoire
 			if(isset($card1) && isset($card2)){
 				//Si les valeurs correspondent ( par exemple sur un jeu à 8 paires, si 1 = 9 )
