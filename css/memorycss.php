@@ -22,6 +22,8 @@ body{
 
 #game_area{
 	display:flex;
+	width:70%;
+	flex-wrap:wrap;
 }
 
 #game_area form{
@@ -35,22 +37,10 @@ body{
 	width:100%;
 }
 
-input[value='?']{
+input[id='?']{
 	background:url('../assets/back.png');
 	background-size:100%;
 }
-
-input[value='1']{
-	background:url('../assets/alchemist.png');
-	background-size:100%;
-
-<?php
-	for($i=1;$i<13;$i++){
-		?>input[value=$i]{
-			background:url('../assets/alchemist.png');
-		}<?php
-	}
-?>
 
 h1,h2,h3, p{
 	font-family:Courier;

@@ -8,7 +8,7 @@ X Classement
 
 --
 
-Jouer en solo
+X Jouer en solo
 Jouer contre l'IA
 Profil
 Retour
@@ -16,17 +16,15 @@ Retour
 
 --
 
-Sélectionner la difficulté
+X Sélectionner la difficulté
+X Sélectionner le temps
 
 --
 
-Jeu
-
-=
-
-Choix du nombre de paires de 3 à 12 ( de 6 à 24 cartes )
+X Jeu
 Compteur de coups
-
+Retour à l'accueil
+Bouton reset
 
 ------
 
