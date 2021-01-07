@@ -1,0 +1,39 @@
+Page d'accueil
+
+=
+
+X Se connecter
+X Jouer en invité
+X Classement
+
+--
+
+Jouer en solo
+Jouer contre l'IA
+Profil
+Retour
+(Se déconnecter)
+
+--
+
+Sélectionner la difficulté
+
+--
+
+Jeu
+
+=
+
+Choix du nombre de paires de 3 à 12 ( de 6 à 24 cartes )
+Compteur de coups
+
+
+------
+
+Profil
+
+=
+
+Parties jouées
+Difficulté moyenne ( nombre de paires / parties jouées )
+Moyenne de coup ( nombre de paires / nombre de coups )
