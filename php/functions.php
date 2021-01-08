@@ -1,5 +1,59 @@
 <?php
 
+	//Se connecte à localhost si possible
+	//Créé $db si elle n'existe pas puis se connecte à $db
+	//Créé la table 'users' si elle n'existe pas encore dans $db
+	//Retourne la connexion à $db
+	function connect_to($db){
+		if(mysqli_connect('localhost','root','',$db)){
+			$conn=new mysqli('localhost', 'root', '', $db);
+			return $conn;
+		}
+
+		else{
+			$conn = mysqli_connect('localhost', 'root', '');
+
+			if($conn){}
+			else if(!$conn){
+				die("ERROR: Could not connect. " . mysqli_connect_error());
+			}
+			if(!mysqli_select_db($conn, $db)){
+				$sql='CREATE DATABASE memorydb';
+				if(!$conn->query($sql)){
+					die("ERROR: Could not create database" . mysqli_error() . "<br>");
+				}
+			}
+			if(mysqli_select_db($conn, $db)){
+				$conn=mysqli_connect('localhost', 'root', '', $db);
+				if(!$conn){
+					die("ERROR: Could not connect. " . mysqli_connect_error());
+				}
+				else{
+					$conn->query('
+						CREATE TABLE IF NOT EXISTS users (
+						id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+						login VARCHAR(255) NOT NULL,
+						password VARCHAR(255) NOT NULL,
+						score INT(5)
+						)');
+				}
+				return $conn;
+			}
+		}
+	}
+
+	//Vérifie l'existance du pseudo dans la db
+	function look_for($username, $db){
+		$row=$db->query("SELECT * FROM `users`");
+		for($i=0;$i<mysqli_num_rows($row);$i++){
+			$result=mysqli_fetch_assoc($row);
+			if($username==$result['login']){
+				return 1;
+			}
+		}
+		return 0;
+	}
+
 	//Génération du plateau de jeu
 	function generate_cards($level){
 		if($level){
@@ -20,7 +74,7 @@
 			return $deck;
 		}
 		else{
-			echo "Il y a eut une erreur. Veuillez "?><a href="index.php">Réessayer</a><?php
+			echo "Il y a eut une erreur dans la génération du jeu. Veuillez "?><a href="index.php">Réessayer</a><?php
 			return 0;
 		}
 	}
@@ -110,6 +164,22 @@
 		else{
 			echo "Memory is full. <br>";
 		}
+	}
+
+	//Réinitialise la partie aux mêmes paramétrages définis par l'utilisateur, avec un jeu de cartes différent
+	function reset_game(&$time, &$deck, &$ingame, &$level, &$counter, &$card1, &$card2){
+		$temp_time=$time;
+		$temp_level=$level;
+		$counter=NULL;$deck=NULL;$ingame=NULL;$card1=NULL;$card2=NULL;$time=NULL;$level=NULL;
+		$time=$temp_time;
+		$level=$temp_level;
+		$ingame=1;
+		$deck=generate_cards($level);
+	}
+
+	//Réinitialise tout
+	function reset_accueil(&$time, &$deck, &$ingame, &$level, &$counter, &$card1, &$card2){
+		$counter=NULL;$deck=NULL;$ingame=NULL;$card1=NULL;$card2=NULL;$time=NULL;$level=NULL;
 	}
 
 ?>

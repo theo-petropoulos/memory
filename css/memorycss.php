@@ -5,8 +5,7 @@
 
 <style>
 
-html{
-}
+*{cursor:url('../assets/cursor1.png'), auto;}
 
 body{
 	background-image:url(../assets/bg2.jpg);
@@ -18,6 +17,14 @@ body{
 	justify-content: center;
 	align-items:center;
 	color:white;
+}
+
+form{
+	margin:0;
+}
+
+input[type=submit]:hover{
+	cursor:url('../assets/cursor2.png'), pointer;
 }
 
 #main_area{
@@ -40,7 +47,6 @@ body{
 	flex-grow:1;
 	width:100px;
 	height:155px;
-	margin:0;
 }
 
 #game_area form input{
@@ -49,7 +55,7 @@ body{
 }
 
 input[id='?']:hover{
-	cursor:pointer;
+	cursor:url('../assets/cursor2.png'), pointer;
 	box-shadow: inset 0 0 0 1000px rgba(255,255,255,.3);
 	border:3px solid rgba(255,255,255,0.2);
 	border-radius:5px;

@@ -3,6 +3,7 @@ Page d'accueil
 =
 
 X Se connecter
+Inscription
 X Jouer en invité
 X Classement
 
