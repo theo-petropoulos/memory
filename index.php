@@ -26,7 +26,7 @@
 		reset_accueil(
 				$_SESSION['time'], $_SESSION['deck'], $_SESSION['ingame'],
 				$_SESSION['level'], $_SESSION['play_count'], $_SESSION['card1'],
-				$_SESSION['card2']);
+				$_SESSION['card2'], $_SESSION['memory'], $_SESSION['match_found']);
 		if(isset($temp_conn) && $temp_conn){$_SESSION['connected']=$temp_conn;$temp_conn=NULL;}
 	}
 
@@ -55,7 +55,7 @@
 		reset_game(
 				$_SESSION['time'], $_SESSION['deck'], $_SESSION['ingame'],
 				$_SESSION['level'], $_SESSION['play_count'], $_SESSION['card1'],
-				$_SESSION['card2']);
+				$_SESSION['card2'], $_SESSION['memory'], $_SESSION['match_found']);
 		unset($_POST);
 	}
 
@@ -105,11 +105,12 @@
 					$i++;
 				}
 				//Si une paire est trouvée et que la première carte n'est pas encore en mémoire
-				if($_SESSION['match_found']==1 && !isset($_SESSION['card1'])){
+				if(isset($_SESSION['match_found']) && $_SESSION['match_found']==1 && !isset($_SESSION['card1'])){
 					$card=$card_1;
 				}
 				//Sinon si une paire est trouvée et que la première carte est en mémoire et que la deuxième carte n'est pas en mémoire
-				else if($_SESSION['match_found']==1 && isset($_SESSION['card1']) && $_SESSION['card1'] && !isset($_SESSION['card2'])){
+				else if(isset($_SESSION['match_found']) && $_SESSION['match_found']==1 && 
+						isset($_SESSION['card1']) && $_SESSION['card1'] && !isset($_SESSION['card2'])){
 					$card=$card_2;
 					unset($_SESSION['match_found']);
 				}
@@ -128,7 +129,7 @@
 				$_SESSION['play_count'], $_SESSION['deck'], $card, 
 				$_SESSION['card1'], $_SESSION['card2'], $_SESSION['mismatch'], 
 				$_SESSION['level'], $_SESSION['time'], $page);
-
+			
 			//On vide la mémoire card1 et card2 session toutes les 2 cartes jouées
 			if(isset($_SESSION['card1']) && isset($_SESSION['card2'])){unset($_SESSION['card1'],$_SESSION['card2']);}
 		}

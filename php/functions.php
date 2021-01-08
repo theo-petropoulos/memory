@@ -167,10 +167,10 @@
 	}
 
 	//Réinitialise la partie aux mêmes paramétrages définis par l'utilisateur, avec un jeu de cartes différent
-	function reset_game(&$time, &$deck, &$ingame, &$level, &$counter, &$card1, &$card2){
+	function reset_game(&$time, &$deck, &$ingame, &$level, &$counter, &$card1, &$card2, &$memory, &$match){
 		$temp_time=$time;
 		$temp_level=$level;
-		$counter=NULL;$deck=NULL;$ingame=NULL;$card1=NULL;$card2=NULL;$time=NULL;$level=NULL;
+		$counter=NULL;$deck=NULL;$ingame=NULL;$card1=NULL;$card2=NULL;$time=NULL;$level=NULL;$memory=NULL;$match=NULL;
 		$time=$temp_time;
 		$level=$temp_level;
 		$ingame=1;
@@ -178,8 +178,8 @@
 	}
 
 	//Réinitialise tout
-	function reset_accueil(&$time, &$deck, &$ingame, &$level, &$counter, &$card1, &$card2){
-		$counter=NULL;$deck=NULL;$ingame=NULL;$card1=NULL;$card2=NULL;$time=NULL;$level=NULL;
+	function reset_accueil(&$time, &$deck, &$ingame, &$level, &$counter, &$card1, &$card2, &$memory, &$match){
+		$counter=NULL;$deck=NULL;$ingame=NULL;$card1=NULL;$card2=NULL;$time=NULL;$level=NULL;$memory=NULL;$match=NULL;
 	}
 
 ?>
