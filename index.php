@@ -1,22 +1,38 @@
 <?php
-
+	
 	require_once 'php/class.php';
 	require_once 'php/functions.php';
 
 	$page = $_SERVER['PHP_SELF'];
 	
-	//Créé la connexion avec la base de donnée, la créée si besoin, et créée la table users dans cette base de donnée
-	$conn=connect_to('memorydb');
-
 	if(!isset($_SESSION)){
 		session_start();
 	}
 
+	//Se connecte à la base de donnée, la créée si besoin, et créée la table users si elle n'existe pas
+	$_SESSION['conn']=connect_to('memorydb', 'users');
+	//Identique, créé la table games si elle n'existe pas
+	$_SESSION['conn2']=connect_to2('memorydb', 'games');
+
 	//Si l'utilisateur essaie de s'inscrire
 	if(isset($_POST['login']) && $_POST['login'] && isset($_POST['password']) 
 		&& $_POST['password'] && isset($_POST['vpassword']) && $_POST['vpassword']){
-		$user=new user($_POST['login'], $_POST['password'], $_POST['vpassword']);
-		$user->create_user();
+		$_SESSION['user']=new user($_POST['login'], $_POST['password'], $_POST['vpassword']);
+		$_SESSION['user']->create_user();
+	}
+
+	//Si l'utilisateur essaie de se connecter
+	if(isset($_POST['clogin']) && $_POST['clogin'] && isset($_POST['cpassword']) && $_POST['cpassword']){
+		$_SESSION['user']=new user($_POST['clogin'], $_POST['cpassword'], NULL);
+		$_SESSION['user']->log_user($_SESSION['connected']);
+		if(isset($_SESSION['connected']) && $_SESSION['connected']=='success'){
+			$_SESSION['login']=$_SESSION['user']->get_login();
+		}
+	}
+
+	//Si l'utilisateur veut se déconnecter
+	if(isset($_POST['disconnect']) && $_POST['disconnect']==1){
+		unset($_SESSION['connected'], $_SESSION['user'], $_SESSION['login']);
 	}
 
 	//Si l'utilisateur veut revenir à l'accueil, on unset tout sauf l'identification, s'il est en jeu, il peut choisir d'annuler
@@ -27,9 +43,11 @@
 				$_SESSION['time'], $_SESSION['deck'], $_SESSION['ingame'],
 				$_SESSION['level'], $_SESSION['play_count'], $_SESSION['card1'],
 				$_SESSION['card2'], $_SESSION['memory'], $_SESSION['match_found']);
+		$_SESSION['AI_play_count'] = 'R';
 		if(isset($temp_conn) && $temp_conn){$_SESSION['connected']=$temp_conn;$temp_conn=NULL;}
 	}
 
+	//Si l'utilisateur annule le retour à l'accueil
 	else if(isset($_POST['naccueil']) && $_POST['naccueil']==1){
 		unset($_POST);
 	}
@@ -67,72 +85,38 @@
 
 	//Si deux cartes ne sont pas identiques
 	if(isset($_SESSION['mismatch']) && $_SESSION['mismatch']==1 && isset($_SESSION['card1']) && isset($_SESSION['card2']) 
-	&& in_array($_SESSION['card1'], range(1,12)) && in_array($_SESSION['card2'], range(1,12))){
+	&& in_array($_SESSION['card1'], range(1,2*$_SESSION['level'])) && in_array($_SESSION['card2'], range(1,2*$_SESSION['level']))){
 		//On retourne les deux cartes côté verso
 		unset_cards($_SESSION['deck'], $_SESSION['card1'], $_SESSION['card2'], $_SESSION['mismatch']);
 	}
 
 	//Si l'utilisateur choisit une carte
-	if(isset($_POST['card_value']) && in_array($_POST['card_value'], range(1,12))){
+	if(isset($_POST['card_value']) && in_array($_POST['card_value'], range(1,2*$_SESSION['level']))){
 		//On joue un coup
 		play_turn(
 			$_SESSION['play_count'], $_SESSION['deck'], $_POST['card_value'], 
 			$_SESSION['card1'], $_SESSION['card2'], $_SESSION['mismatch'], 
 			$_SESSION['level'], $_SESSION['time'], $page);
 		//On retire les données envoyées par l'utilisateur
+		if(verify_game($_SESSION['deck']) && isset($_SESSION['connected']) && $_SESSION['connected']=='success' 
+		&& isset($_SESSION['login']) && $_SESSION['login'] ){
+			$_SESSION['user']->store_game($_SESSION['level'], $_SESSION['play_count']);
+		}
 		unset($_POST);
 	}
 
+	//Si l'utilisateur souhaite obtenir un score "IA"
+	//L'IA joue sa partie, on enregistre son score et on remet le plateau à zero en générant une nouvelle partie
 	if(isset($_POST['aiplay']) && $_POST['aiplay']==1){
-		//Tant que la condition de fin de partie est nulle
 		while(!verify_game($_SESSION['deck'])){
-			$i=$j=1;
-			//Tant qu'il existe une carte $i en mémoire et qu'aucune paire n'a été trouvée
-			if(isset($_SESSION['memory'][$i]) && $_SESSION['memory']){
-				while(isset($_SESSION['memory'][$i])){
-					//On parcourt une deuxième fois la mémoire pour trouver une paire
-					while(isset($_SESSION['memory'][$j])){
-						//Si une paire est trouvée, on initialise la variable match_found pour sortir de la boucle
-						//On met en mémoire temporaire les 2 cartes de la paire
-						if( ($_SESSION['memory'][$i]+$_SESSION['level'])==$_SESSION['memory'][$j] ||
-							($_SESSION['memory'][$j]+$_SESSION['level'])==$_SESSION['memory'][$j]) {
-							$_SESSION['match_found']=1;
-							$card_1=$i;
-							$card_2=$j;
-						}
-						$j++;
-					}
-					$i++;
-				}
-				//Si une paire est trouvée et que la première carte n'est pas encore en mémoire
-				if(isset($_SESSION['match_found']) && $_SESSION['match_found']==1 && !isset($_SESSION['card1'])){
-					$card=$card_1;
-				}
-				//Sinon si une paire est trouvée et que la première carte est en mémoire et que la deuxième carte n'est pas en mémoire
-				else if(isset($_SESSION['match_found']) && $_SESSION['match_found']==1 && 
-						isset($_SESSION['card1']) && $_SESSION['card1'] && !isset($_SESSION['card2'])){
-					$card=$card_2;
-					unset($_SESSION['match_found']);
-				}
-			}
-
-			//Si aucune paire n'a été trouvée, on joue une carte qui n'a pas encore été jouée
-			if(!isset($_SESSION['match_found'])){
-				for($i=1;isset($_SESSION['memory'][$i]);$i++){
-				}
-				$card=$i;
-				$_SESSION['memory'][$i]=$card;
-			}
-
-			//On joue un tour avec la variable $card définie plus haut
-			play_turn(
-				$_SESSION['play_count'], $_SESSION['deck'], $card, 
-				$_SESSION['card1'], $_SESSION['card2'], $_SESSION['mismatch'], 
-				$_SESSION['level'], $_SESSION['time'], $page);
-			
-			//On vide la mémoire card1 et card2 session toutes les 2 cartes jouées
-			if(isset($_SESSION['card1']) && isset($_SESSION['card2'])){unset($_SESSION['card1'],$_SESSION['card2']);}
+			ai_play($_SESSION['deck'], $_SESSION['memory'], $_SESSION['level'], $_SESSION['time'],
+					$_SESSION['match_found'], $_SESSION['card1'], $_SESSION['card2'],
+					$_SESSION['play_count'], $_SESSION['mismatch']);
 		}
+		for($i=0;isset($_SESSION['deck'][$i]);$i++){
+			$_SESSION['deck'][$i]->unselect_card();
+		}
+		unset($_SESSION['card1'], $_SESSION['card2']);
 	}
 	?>
 
@@ -154,7 +138,9 @@
 		<header>
 			<h1>Memory</h1>
 			<h2>Card Matching Game</h2>
-			<p>test blablabla</p>
+			<?php if(isset($_SESSION['connected']) && $_SESSION['connected']=='success' && isset($_SESSION['login']) && $_SESSION['login']){
+				?><h3>Bienvenue <strong><?php echo $_SESSION['login'] ?></strong></h3><?php
+			}?>
 		</header>
 
 		<main id="main_area">
@@ -186,7 +172,7 @@
 						</div>
 					<?php }
 
-					else if(isset($_SESSION['connected']) && $_SESSION['connected']){?>
+					else if(isset($_SESSION['connected']) && $_SESSION['connected']=='success'){?>
 						<div id="logged">
 							<form method="post" action="index.php">
 								<input type="checkbox" name="menu5" checked hidden>
@@ -216,10 +202,10 @@
 					?>
 					<div id="connect_form">
 						<form method="post" action="index.php">
-							<label for="login">Login :<br></label>
-							<input type="text" name="login" required>
-							<label for="password"><br>Mot de passe:<br></label>
-							<input type="password" name="password" required>
+							<label for="clogin">Login :<br></label>
+							<input type="text" name="clogin" required>
+							<label for="cpassword"><br>Mot de passe:<br></label>
+							<input type="password" name="cpassword" required>
 							<br>
 							<input type="submit" value="Connexion">
 						</form>
@@ -228,7 +214,7 @@
 				}
 
 				//Sinon si on a fait le choix numéro 2 ( jouer en invité ) & si on est pas dans une partie
-				else if(isset($_POST['menu2']) && $_POST['menu2'] && !isset($_SESSION['ingame'])){
+				else if( ( (isset($_POST['menu2']) && $_POST['menu2']) || (isset($_POST['menu5']) && $_POST['menu5'] && isset($_SESSION['connected']) && $_SESSION['connected']=='success') ) && !isset($_SESSION['ingame'])){
 					//On initialise la variable ingame à 1
 					$_SESSION['ingame']=1;
 				}
@@ -326,11 +312,16 @@
 								<input type="hidden" name="reset">
 								<input type="submit" value="Relancer">
 							</form>
+							<?php
+							if((!isset($_SESSION['play_count']) || $_SESSION['play_count']==0) && 
+								( (isset($_SESSION['AI_play_count']) && $_SESSION['AI_play_count']<1 ) || 
+								!isset($_SESSION['AI_play_count']) ) ){?>
 							<form method="post" action="index.php">
 								<input type="hidden" name="aiplay" value="1">
-								<input type="submit" value="AI Play">
+								<input type="submit" value="Obtenir le perfect score">
 							</form>
 							<?php
+							}
 						}
 						if(isset($_POST['reset'])){
 							?><p>Êtes-vous sûr de vouloir réinitialiser le niveau ?</p>
@@ -367,6 +358,14 @@
 		</main>
 
 		<footer>
+			<?php
+			if(isset($_SESSION['connected']) && $_SESSION['connected']=='success' && (!isset($_SESSION['ingame']) || !$_SESSION['ingame'])){
+				?><form method="post" action="index.php">
+					<input type="hidden" name="disconnect" value="1">
+					<input type="submit" value="Se déconnecter">
+				</form>
+				<?php
+			}?>
 			<form method="post" action="index.php">
 				<input type="hidden" name="accueil" value="1">
 				<input type="submit" value="Accueil">
@@ -387,7 +386,16 @@
 			}
 			//Si le compteur de coup a été initalité
 			if(isset($_SESSION['play_count']) && $_SESSION['play_count']){
-				?><p><?php echo "Compteur de coups : " . $_SESSION['play_count'] . "<br>";?></p><?php
+				if(isset($_POST['aiplay']) && $_POST['aiplay']==1){
+					$_SESSION['AI_play_count'] = $_SESSION['play_count'];
+					$_SESSION['play_count']	= 0;
+				}
+				else{
+					?><p><?php echo "Compteur de coups de l'utilisateur : " . $_SESSION['play_count'] . "<br>";?></p><?php
+				}
+			}
+			if(isset($_SESSION['AI_play_count']) && in_array($_SESSION['AI_play_count'], range(1,40))){
+				?><p>Compteur de coups de L'IA: <?php echo $_SESSION['AI_play_count'] ?>.<br></p><?php
 			}
 			?>
 		</footer>
@@ -396,5 +404,6 @@
 </html>
 
 <?php
-	$conn->close();
+	$_SESSION['conn']->close();
+	$_SESSION['conn2']->close();
 ?>

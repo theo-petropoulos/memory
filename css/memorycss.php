@@ -1,6 +1,5 @@
 <?php
 	header("Content-type: text/css; charset: UTF-8");
-	require_once '../index.php';
 ?>
 
 <style>
@@ -8,6 +7,7 @@
 *{cursor:url('../assets/cursor1.png'), auto;}
 
 body{
+	cursor:url('../assets/cursor1.png'), auto;
 	background-image:url(../assets/bg2.jpg);
 	background-size:100%;
 	position:relative;
@@ -17,6 +17,8 @@ body{
 	justify-content: center;
 	align-items:center;
 	color:white;
+	margin:0;
+	
 }
 
 form{

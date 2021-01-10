@@ -1,19 +1,19 @@
-Page d'accueil
+X Page d'accueil
 
 =
 
 X Se connecter
-Inscription
+X Inscription
 X Jouer en invité
-X Classement
+ Classement
 
 --
 
 X Jouer en solo
-Jouer contre l'IA
+X Jouer contre l'IA
 Profil
-Retour
-(Se déconnecter)
+X Retour
+X (Se déconnecter)
 
 --
 
@@ -23,9 +23,9 @@ X Sélectionner le temps
 --
 
 X Jeu
-Compteur de coups
-Retour à l'accueil
-Bouton reset
+X Compteur de coups
+X Retour à l'accueil
+X Bouton reset
 
 ------
 
