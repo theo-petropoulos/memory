@@ -108,13 +108,18 @@
 	function update_rankings(){
 		$db=connect_to('memorydb','');
 		$users=$db->query("SELECT * FROM `users`");
+		//Pour chaque joueur dans la db
 		for($i=0;$i<$users->num_rows;$i++){
 			$score=0;
 			$result_users=mysqli_fetch_assoc($users);
 			$login=$result_users['login'];
-			echo $login;
 			$games=$db->query( "SELECT * FROM `games` WHERE login='$login'" );
+			//Si le joueur a déjà fait une partie
 			if($games->num_rows){
+				//Chaque niveau rapporte 10000
+				//Chaque tour réduit le score de 1000
+				//Chaque seconde réduit le score de 200
+				//On fait la moyenne pour chaque partie jouée
 				for($j=0;$j<$games->num_rows;$j++){
 					$result_games=mysqli_fetch_assoc($games);
 					$level=$result_games['difficulty']*10000;
@@ -122,9 +127,8 @@
 					$time=$result_games['played']*-200;
 					$score=($score +($level-$moves-$time))/($j+1);
 				}
+				//On garde la partie entière du résultat et on l'insère dans la table
 				$score=intval($score);
-				echo $score;
-				echo $login;
 				$stmt=$db->prepare("UPDATE `users` SET score=? WHERE login=? ");
 				$stmt->bind_param("is", $score, $login);
 				$stmt->execute();

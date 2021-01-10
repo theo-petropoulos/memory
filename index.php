@@ -38,15 +38,12 @@
 
 	//Si l'utilisateur veut revenir à l'accueil, on unset tout sauf l'identification, s'il est en jeu, il peut choisir d'annuler
 	if(isset($_POST['yaccueil']) && $_POST['yaccueil']==1){
-		if(isset($_SESSION['connected'])){$temp_conn=$_SESSION['connected'];}
 		unset($_POST);
 		//Si l'utilisateur était connecté, on met en mémoire son login, son "pass" de connexion, et la connexion à la db
 		if(isset($_SESSION['connected']) && isset($_SESSION['login']) && $_SESSION['connected']='success' && $_SESSION['login']){
 			$temp_login=$_SESSION['login'];
 			$temp_connect=$_SESSION['connected'];
 			$temp_user=$_SESSION['user'];
-			$temp_conn=$_SESSION['conn'];
-			$temp_conn2=$_SESSION['conn2'];
 		}
 		session_unset();
 		//Si on a mis en mémoire ces paramètres, on les réinjecte en session
@@ -54,10 +51,10 @@
 			$_SESSION['login']=$temp_login;
 			$_SESSION['connected']=$temp_connect;
 			$_SESSION['user']=$temp_user;
-			$_SESSION['conn']=$temp_conn;
-			$_SESSION['conn2']=$temp_conn2;
 		}
 		$_SESSION['AI_play_count'] = 'R';
+		$_SESSION['conn']=connect_to('memorydb', 'users');
+		$_SESSION['conn2']=connect_to2('memorydb', 'games');
 	}
 
 	//Si l'utilisateur annule le retour à l'accueil
