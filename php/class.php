@@ -47,19 +47,23 @@
 			$temp_login=strtolower($this->login);
 			$this->login=strtolower($this->login);
 			if(preg_match("/([%\$#\*.!&~\"\'{}\+^@=¤:|\/]+)/", $temp_login)){
-				die("Les charactères spéciaux authorisés dans le login sont - et _");
+				?><p>Erreur : Les charactères spéciaux authorisés dans le login sont - et _</p><?php
+				return 0;
 			}
 			if(strlen($this->login)>40 || strlen($this->password)>40){
-				die("Votre login ou votre mot de passe doit comporter 40 charactères au maximum.");
+				?><p>Erreur : Votre login ou votre mot de passe doit comporter 40 charactères au maximum.</p><?php
+				return 0;
 			}
 			if($this->password!=$this->vpassword){
-				die("Les mots de passe ne correspondent pas.");
+				?><p>Erreur : Les mots de passe ne correspondent pas.</p><?php
+				return 0;
 			}
 			//On vérifie l'existence d'un doublon
 			if(look_for($temp_login, $db)){
-				die("Ce nom d'utilisateur existe déjà. Veuillez réessayer.");
+				?><p>Erreur : Ce nom d'utilisateur existe déjà.</p><?php
+				return 0;
 			}
-			//Si tout est OK ( aucun die() ), on ajoute l'utilisateur à la db
+			//Si tout est OK ( aucun return ), on ajoute l'utilisateur à la db
 			$password=password_hash($this->password, PASSWORD_DEFAULT);
 			$stmt=$db->prepare('INSERT INTO `users` (login, password) VALUES (?,?)');
 			$stmt->bind_param('ss',$temp_login, $password);
@@ -77,13 +81,9 @@
 					$connect='success';
 					return 1;
 				}
-				else{
-					die("Login ou mot de passe incorrect");
-				}
 			}
-			else{
-				die("Login ou mot de passe incorrect");
-			}
+			?><p>Erreur : Login ou mot de passe incorrect</p><?php
+			return 0;
 		}
 
 		//Enregistre le score de l'utilisateur
@@ -92,7 +92,8 @@
 			$login=strtolower($this->login);
 			$played=array_key_last($time)-array_key_first($time);
 			if(!look_for($login, $db)){
-				die("Il y a eut une erreur. Veuillez nous excuser pour la gêne occasionnée.");
+				?><p>Il y a eut une erreur inattendue. Veuillez nous excuser pour la gêne occasionnée.</p><?php
+				return 0;
 			}
 			$stmt=$db->prepare("INSERT INTO `games` (login, difficulty, moves, played) VALUES (?,?,?,?)");
 			$stmt->bind_param('siii', $login, $level, $counter, $played);

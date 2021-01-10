@@ -37,10 +37,14 @@ form{
 	width:100%;
 }
 
+#menu_area{
+	width:100%;
+}
+
 #game_area{
 	display:flex;
-	width:35%;
-	min-width:400px;
+	width:60%;
+	min-width:500px;
 	flex-wrap:wrap;
 	justify-content: center;
 }
@@ -59,6 +63,19 @@ form{
 
 .menu_submit{
 	width:15%;
+	min-width:180px;
+	background-color:#569c90;
+	color:#E7D6C1;
+	border-radius:20px;
+	padding:0.5% 0 0.5% 0;
+	margin-bottom:0.5%;
+	border:5px 0 white;
+	font-family:'Yusei Magic', Courier;
+}
+
+.menu_submit:hover{
+	background-color:#6EC7B8;
+	color:white;
 }
 
 input[type=submit]:hover{
@@ -79,19 +96,86 @@ input[id='?']{
 	border-radius:5px;
 }
 
-input[type=text], input[type=password]{
+input[type=text], input[type=password], input[type="number"]{
 	width:15%;
+	min-width:180px;
+	height:30px;
 	padding:0;
+	margin-bottom:1%;
+	background:#AA9B90;
+}
+
+label{
+	font-family:'Yusei Magic', Courier;
+	font-size:1.5em;
+	color:#E2CBAA;
+	text-shadow:0 1px black, 1px 0 black, -1px 0 black, 0 -1px black;
 }
 
 h1,h2,h3, p{
-	font-family:Impact;
-	color:#ACD8DF;
+	font-family:'Yusei Magic', Courier;
+	color:white;
 	text-shadow:0 1px black, 1px 0 black, -1px 0 black, 0 -1px black;
+}
+
+h1{
+	font-size:3em;
+	letter-spacing:0.2em;
+	margin:1% 0 1% 0;
+}
+
+h2{
+	font-size:2em;
+	letter-spacing:0.2em;
+	margin:1% 0 2% 0;
 }
 
 footer{
 	width:100%;
+}
+
+/** RANKING **/
+
+#rank_title{
+	text-decoration:underline;
+}
+
+#rank_table{
+	margin-bottom:2%;
+}
+
+#rank_table td{
+	border:3px solid black;
+	border-collapse:collapse;
+	text-align:center;
+}
+
+.td_num{
+	background:#569C90;
+}
+
+.td_login, .td_score{
+	background:#E7D6B6;
+}
+
+.td_num1{
+	border-top-left-radius: 10px;
+	background:#FFD800;
+}
+
+#acc_link{
+	font-family:'Yusei Magic', Courier;
+	color:white;
+	font-size:1.5em;
+	text-decoration:none;
+	background:grey;
+	padding:0.2% 2% 0.2% 2%;
+	border-radius:10px;
+	border:1px solid white;
+}
+
+#acc_link:hover{
+	background:#D5D5D5;
 }
 
 </style>

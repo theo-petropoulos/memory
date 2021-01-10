@@ -74,7 +74,8 @@
 			$_SESSION['play_count']=0;
 		}
 		else{
-			die("Les valeurs saisies sont incorrectes.");
+			?><p>Erreur : Les valeurs saisies sont incorrectes</p><?php
+			return 0;
 		}
 	}
 
@@ -143,8 +144,10 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta charset="UTF-8">
 		<link rel="stylesheet" type='text/css' href="css/memorycss.php?v=<?php echo time(); ?>">
+		<link rel="icon" href="assets/back.png" />
 		<script src="https://kit.fontawesome.com/9ddb75d515.js" crossorigin="anonymous"></script>
-		<link href="https://fonts.googleapis.com/css2?family=Syne&display=swap" rel="stylesheet"> 
+		<link rel="preconnect" href="https://fonts.gstatic.com">
+		<link href="https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap" rel="stylesheet"> 
 	</head>
 
 	<body>
@@ -168,6 +171,8 @@
 				(!isset($_POST['menu4']) || !$_POST['menu4']) &&
 				(!isset($_POST['menu5']) || !$_POST['menu5']) &&
 				!isset($_SESSION['ingame'])){
+					?>
+					<div id="menu_area"><?php
 					if(
 						!isset($_SESSION['connected']) && !isset($_POST['menu1']) && 
 						!isset($_POST['menu2']) && !isset($_POST['menu3']) && 
@@ -204,15 +209,15 @@
 
 					<?php if(isset($_SESSION['connected']) && $_SESSION['connected']=='success'){?>
 						<div id="profile" class="form_menu">
-							<form method="post" action="index.php">
-								<input type="checkbox" name="menu6" checked hidden>
+							<form method="get" action="php/profile.php">
+								<input type="checkbox" name="menu6" value="<?php echo $_SESSION['login'];?>" checked hidden>
 								<input class="menu_submit" type="submit" value="Profil">
 							</form>
 						</div>
 					<?php } ?>
 
 					<div id="ranking" class="form_menu">
-						<form method="post" action="ranking.php">
+						<form method="post" action="php/ranking.php">
 							<input type="checkbox" name="menu3" checked hidden>
 							<input class="menu_submit" type="submit" value="Classement">
 						</form>
@@ -225,7 +230,7 @@
 					?>
 					<div id="connect_form" class="form_menu">
 						<form method="post" action="index.php">
-							<label for="clogin">Login :<br></label>
+							<label for="clogin">Login:<br></label>
 							<input type="text" name="clogin" required>
 							<label for="cpassword"><br>Mot de passe:<br></label>
 							<input type="password" name="cpassword" required>
@@ -260,6 +265,7 @@
 							<br>
 							<input class="menu_submit" type="submit" value="Envoyer">
 						</form>
+					</div>
 					</div>
 					<?php
 				}

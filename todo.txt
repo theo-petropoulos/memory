@@ -2,18 +2,18 @@ X Page d'accueil
 
 =
 
- Se connecter
+X Se connecter
 X Inscription
 X Jouer en invité
- Classement
+X Classement
 
 --
 
 X Jouer en solo
 X Jouer contre l'IA
-Profil
+ Profil
 X Retour
-(Se déconnecter)
+X (Se déconnecter)
 
 --
 
@@ -24,8 +24,8 @@ X Sélectionner le temps
 
 X Jeu
 X Compteur de coups
-Retour à l'accueil
-Bouton reset
+X Retour à l'accueil
+X Bouton reset
 
 ------
 
@@ -33,6 +33,7 @@ Profil
 
 =
 
-Parties jouées
-Difficulté moyenne ( nombre de paires / parties jouées )
-Moyenne de coup ( nombre de paires / nombre de coups )
+Nombre de parties jouées
+Détail des 3 dernières parties
+Difficulté moyenne ( difficulté / parties )
+Moyenne de coup ( coups / temps )
