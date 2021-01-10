@@ -64,7 +64,8 @@
 						id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 						login VARCHAR(255) NOT NULL,
 						difficulty INT(2) NOT NULL,
-						moves INT(3)
+						moves INT(3),
+						played INT(4)
 						)");
 			}
 			return $conn;
@@ -94,10 +95,39 @@
 						id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 						login VARCHAR(255) NOT NULL,
 						difficulty INT(2) NOT NULL,
-						moves INT(3)
+						moves INT(3),
+						played INT(4)
 						)");
 				}
 				return $conn;
+			}
+		}
+	}
+
+	//Mets à jour le classement
+	function update_rankings(){
+		$db=connect_to('memorydb','');
+		$users=$db->query("SELECT * FROM `users`");
+		for($i=0;$i<$users->num_rows;$i++){
+			$score=0;
+			$result_users=mysqli_fetch_assoc($users);
+			$login=$result_users['login'];
+			echo $login;
+			$games=$db->query( "SELECT * FROM `games` WHERE login='$login'" );
+			if($games->num_rows){
+				for($j=0;$j<$games->num_rows;$j++){
+					$result_games=mysqli_fetch_assoc($games);
+					$level=$result_games['difficulty']*10000;
+					$moves=$result_games['moves']*-1000;
+					$time=$result_games['played']*-200;
+					$score=($score +($level-$moves-$time))/($j+1);
+				}
+				$score=intval($score);
+				echo $score;
+				echo $login;
+				$stmt=$db->prepare("UPDATE `users` SET score=? WHERE login=? ");
+				$stmt->bind_param("is", $score, $login);
+				$stmt->execute();
 			}
 		}
 	}

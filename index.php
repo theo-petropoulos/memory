@@ -19,6 +19,7 @@
 		&& $_POST['password'] && isset($_POST['vpassword']) && $_POST['vpassword']){
 		$_SESSION['user']=new user($_POST['login'], $_POST['password'], $_POST['vpassword']);
 		$_SESSION['user']->create_user();
+		unset($_SESSION['user']);
 	}
 
 	//Si l'utilisateur essaie de se connecter
@@ -39,12 +40,24 @@
 	if(isset($_POST['yaccueil']) && $_POST['yaccueil']==1){
 		if(isset($_SESSION['connected'])){$temp_conn=$_SESSION['connected'];}
 		unset($_POST);
-		reset_accueil(
-				$_SESSION['time'], $_SESSION['deck'], $_SESSION['ingame'],
-				$_SESSION['level'], $_SESSION['play_count'], $_SESSION['card1'],
-				$_SESSION['card2'], $_SESSION['memory'], $_SESSION['match_found']);
+		//Si l'utilisateur était connecté, on met en mémoire son login, son "pass" de connexion, et la connexion à la db
+		if(isset($_SESSION['connected']) && isset($_SESSION['login']) && $_SESSION['connected']='success' && $_SESSION['login']){
+			$temp_login=$_SESSION['login'];
+			$temp_connect=$_SESSION['connected'];
+			$temp_user=$_SESSION['user'];
+			$temp_conn=$_SESSION['conn'];
+			$temp_conn2=$_SESSION['conn2'];
+		}
+		session_unset();
+		//Si on a mis en mémoire ces paramètres, on les réinjecte en session
+		if(isset($temp_login) && isset($temp_connect)){
+			$_SESSION['login']=$temp_login;
+			$_SESSION['connected']=$temp_connect;
+			$_SESSION['user']=$temp_user;
+			$_SESSION['conn']=$temp_conn;
+			$_SESSION['conn2']=$temp_conn2;
+		}
 		$_SESSION['AI_play_count'] = 'R';
-		if(isset($temp_conn) && $temp_conn){$_SESSION['connected']=$temp_conn;$temp_conn=NULL;}
 	}
 
 	//Si l'utilisateur annule le retour à l'accueil
@@ -97,10 +110,14 @@
 			$_SESSION['play_count'], $_SESSION['deck'], $_POST['card_value'], 
 			$_SESSION['card1'], $_SESSION['card2'], $_SESSION['mismatch'], 
 			$_SESSION['level'], $_SESSION['time'], $page);
+		//On créé un timestamp des inputs utilisateur pour son classement, s'il est connecté
+		if(isset($_SESSION['connected']) && $_SESSION['connected']=='success' && isset($_SESSION['login']) && $_SESSION['login']){
+			$_SESSION['log_time'][]=time();
+		}
 		//On retire les données envoyées par l'utilisateur
 		if(verify_game($_SESSION['deck']) && isset($_SESSION['connected']) && $_SESSION['connected']=='success' 
-		&& isset($_SESSION['login']) && $_SESSION['login'] ){
-			$_SESSION['user']->store_game($_SESSION['level'], $_SESSION['play_count']);
+		&& isset($_SESSION['login']) && $_SESSION['login'] && (!isset($_SESSION['invite']) || !$_SESSION['invite'])){
+			$_SESSION['user']->store_game($_SESSION['level'], $_SESSION['play_count'], $_SESSION['log_time']);
 		}
 		unset($_POST);
 	}
@@ -158,40 +175,49 @@
 						!isset($_SESSION['connected']) && !isset($_POST['menu1']) && 
 						!isset($_POST['menu2']) && !isset($_POST['menu3']) && 
 						!isset($_POST['menu4']) && !isset($_POST['menu5'])){?>
-						<div id="connect">
+						<div id="connect" class="form_menu">
 							<form method="post" action="index.php">
 								<input type="checkbox" name="menu1" checked hidden>
-								<input type="submit" value="Se connecter">
+								<input class="menu_submit" type="submit" value="Se connecter">
 							</form>
 						</div>
-						<div id="register">
+						<div id="register" class="form_menu">
 							<form method="post" action="index.php">
 								<input type="checkbox" name="menu4" checked hidden>
-								<input type="submit" value="S'inscrire">
+								<input class="menu_submit" type="submit" value="S'inscrire">
 							</form>
 						</div>
 					<?php }
 
 					else if(isset($_SESSION['connected']) && $_SESSION['connected']=='success'){?>
-						<div id="logged">
+						<div id="logged" class="form_menu">
 							<form method="post" action="index.php">
 								<input type="checkbox" name="menu5" checked hidden>
-								<input type="submit" value="Jouer">
+								<input class="menu_submit" type="submit" value="Jouer">
 							</form>
 						</div>
 					<?php } ?>
 
-					<div id="guest">
+					<div id="guest" class="form_menu">
 						<form method="post" action="index.php">
 							<input type="checkbox" name="menu2" checked hidden>
-							<input type="submit" value="Jouer en invité">
+							<input class="menu_submit" type="submit" value="Jouer en invité">
 						</form>
 					</div>
 
-					<div id="ranking">
+					<?php if(isset($_SESSION['connected']) && $_SESSION['connected']=='success'){?>
+						<div id="profile" class="form_menu">
+							<form method="post" action="index.php">
+								<input type="checkbox" name="menu6" checked hidden>
+								<input class="menu_submit" type="submit" value="Profil">
+							</form>
+						</div>
+					<?php } ?>
+
+					<div id="ranking" class="form_menu">
 						<form method="post" action="ranking.php">
 							<input type="checkbox" name="menu3" checked hidden>
-							<input type="submit" value="Classement">
+							<input class="menu_submit" type="submit" value="Classement">
 						</form>
 					</div>
 					<?php
@@ -200,14 +226,14 @@
 				//Sinon si on a fait le choix numéro 1 ( se connecter ) & si on est pas dans une partie
 				else if(isset($_POST['menu1']) && $_POST['menu1'] && !isset($_SESSION['ingame'])){
 					?>
-					<div id="connect_form">
+					<div id="connect_form" class="form_menu">
 						<form method="post" action="index.php">
 							<label for="clogin">Login :<br></label>
 							<input type="text" name="clogin" required>
 							<label for="cpassword"><br>Mot de passe:<br></label>
 							<input type="password" name="cpassword" required>
 							<br>
-							<input type="submit" value="Connexion">
+							<input class="menu_submit" type="submit" value="Connexion">
 						</form>
 					</div>
 					<?php
@@ -217,22 +243,27 @@
 				else if( ( (isset($_POST['menu2']) && $_POST['menu2']) || (isset($_POST['menu5']) && $_POST['menu5'] && isset($_SESSION['connected']) && $_SESSION['connected']=='success') ) && !isset($_SESSION['ingame'])){
 					//On initialise la variable ingame à 1
 					$_SESSION['ingame']=1;
+					if(!isset($_POST['menu5']) || !$_POST['menu5']){
+						$_SESSION['invite']=1;
+					}
 				}
 
 				else if(isset($_POST['menu4']) && $_POST['menu4'] && !isset($_SESSION['ingame'])){
 					?>
-					<form method="post" action="index.php">
-						<label for="login">Login :<br></label>
-						<input type="text" name="login" placeholder="Ex: John-Doe64" required>
-						<br>
-						<label for="password">Mot de passe :<br></label>
-						<input type="password" name="password" required>
-						<br>
-						<label for="vpassword">Confirmer le mot de passe :<br></label>
-						<input type="password" name="vpassword" required>
-						<br>
-						<input type="submit" value="Envoyer">
-					</form>
+					<div id="register_form" class="form_menu">
+						<form method="post" action="index.php">
+							<label for="login">Login :<br></label>
+							<input type="text" name="login" placeholder="Ex: John-Doe64" required>
+							<br>
+							<label for="password">Mot de passe :<br></label>
+							<input type="password" name="password" required>
+							<br>
+							<label for="vpassword">Confirmer le mot de passe :<br></label>
+							<input type="password" name="vpassword" required>
+							<br>
+							<input class="menu_submit" type="submit" value="Envoyer">
+						</form>
+					</div>
 					<?php
 				}
 
@@ -308,30 +339,30 @@
 						</section>
 						<?php
 						if(isset($_SESSION['ingame']) && $_SESSION['ingame']){
-							?><form method="post" action="index.php">
+							?><form method="post" action="index.php" class="form_menu">
 								<input type="hidden" name="reset">
-								<input type="submit" value="Relancer">
+								<input class="menu_submit" type="submit" value="Relancer">
 							</form>
 							<?php
 							if((!isset($_SESSION['play_count']) || $_SESSION['play_count']==0) && 
 								( (isset($_SESSION['AI_play_count']) && $_SESSION['AI_play_count']<1 ) || 
 								!isset($_SESSION['AI_play_count']) ) ){?>
-							<form method="post" action="index.php">
+							<form method="post" action="index.php" class="form_menu">
 								<input type="hidden" name="aiplay" value="1">
-								<input type="submit" value="Obtenir le perfect score">
+								<input class="menu_submit" type="submit" value="Obtenir le perfect score">
 							</form>
 							<?php
 							}
 						}
 						if(isset($_POST['reset'])){
 							?><p>Êtes-vous sûr de vouloir réinitialiser le niveau ?</p>
-							<form method="post" action="index.php">
+							<form method="post" action="index.php" class="form_menu">
 								<input type="hidden" name="yreset" value=1>
-								<input type="submit" value="Oui">
+								<input class="menu_submit" type="submit" value="Oui">
 							</form>
-							<form method="post" action="index.php">
+							<form method="post" action="index.php" class="form_menu">
 								<input type="hidden" name="nreset" value=1>
-								<input type="submit" value="Non">
+								<input class="menu_submit" type="submit" value="Non">
 							</form>
 						<?php
 						}
@@ -341,7 +372,7 @@
 					else{
 						?>
 						<!--On demande à l'utilisateur les paramètres de la partie-->
-						<form method="post" action="index.php">
+						<form method="post" action="index.php" class="form_menu">
 							<label for="level">Nombre de paires (de 3 à 12):<br></label>
 							<input type="number" name="level" min=3 max=12>
 							<br>
@@ -349,7 +380,7 @@
 							<input type="number" name="time" min=1 max=5>
 							<input type="checkbox" checked hidden name="generate">
 							<br>
-							<input type="submit" value="Générer le niveau">
+							<input class="menu_submit" type="submit" value="Générer le niveau">
 						</form>
 						<?php
 					}
@@ -360,27 +391,27 @@
 		<footer>
 			<?php
 			if(isset($_SESSION['connected']) && $_SESSION['connected']=='success' && (!isset($_SESSION['ingame']) || !$_SESSION['ingame'])){
-				?><form method="post" action="index.php">
+				?><form method="post" action="index.php" class="form_menu">
 					<input type="hidden" name="disconnect" value="1">
-					<input type="submit" value="Se déconnecter">
+					<input class="menu_submit" type="submit" value="Se déconnecter">
 				</form>
 				<?php
 			}?>
-			<form method="post" action="index.php">
+			<form method="post" action="index.php" class="form_menu">
 				<input type="hidden" name="accueil" value="1">
-				<input type="submit" value="Accueil">
+				<input class="menu_submit" type="submit" value="Accueil">
 			</form>
 			<?php 
 			if(isset($_POST['accueil']) && $_POST['accueil'] && isset($_SESSION['ingame']) && $_SESSION['ingame']){
 				?>
 				<p>La partie en cours sera annulée, continuer ?</p>
-				<form method="post" action="index.php">
+				<form method="post" action="index.php" class="form_menu">
 					<input type="hidden" name="yaccueil" value=1>
-					<input type="submit" value="Oui">
+					<input class="menu_submit" type="submit" value="Oui">
 				</form>
-				<form method="post" action="index.php">
+				<form method="post" action="index.php" class="form_menu">
 					<input type="hidden" name="naccueil" value=1>
-					<input type="submit" value="Non">
+					<input class="menu_submit" type="submit" value="Non">
 				</form>	
 			<?php
 			}

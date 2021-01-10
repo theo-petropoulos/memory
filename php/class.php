@@ -87,31 +87,25 @@
 		}
 
 		//Enregistre le score de l'utilisateur
-		public function store_game($level,$counter){
+		public function store_game($level,$counter,$time){
 			$db=connect_to2('memorydb', 'games');
 			$login=strtolower($this->login);
+			$played=array_key_last($time)-array_key_first($time);
 			if(!look_for($login, $db)){
 				die("Il y a eut une erreur. Veuillez nous excuser pour la gêne occasionnée.");
 			}
-			$stmt=$db->prepare("INSERT INTO `games` (login, difficulty, moves) VALUES (?,?,?)");
-			$stmt->bind_param('sii', $login, $level, $counter);
+			$stmt=$db->prepare("INSERT INTO `games` (login, difficulty, moves, played) VALUES (?,?,?,?)");
+			$stmt->bind_param('siii', $login, $level, $counter, $played);
 			$stmt->execute();
+			update_rankings();
 		}
 
 		public function get_login(){
 			return $this->login;
 		}
 
-		public function get_password(){
-			return $this->password;
-		}
-
 		public function get_score(){
 			return $this->score;
-		}
-
-		public function get_ranking(){
-			return $this->ranking;
 		}
 	}
 ?>
