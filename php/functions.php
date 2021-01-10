@@ -161,8 +161,8 @@
 			//On parcourt les cartes tant qu'elles existent
 			for($i=0;isset($deck[$i]);$i++){
 				//On créé les cartes et on envoie leur valeur dans le deck
-				${"card$i"}=new card();
-				${"card$i"}->send_value($deck[$i]);
+				${"card$i"}=new Card();
+				${"card$i"}->sendValue($deck[$i]);
 				$deck[$i]=${"card$i"};
 			}
 			return $deck;
@@ -176,7 +176,7 @@
 	//Vérifie s'il reste des cartes face verso, permet de définir la fin de partie
 	function verify_game($deck){
 		for($i=0;isset($deck[$i]);$i++){
-			if($deck[$i]->get_state()=='verso'){
+			if($deck[$i]->getState()=='verso'){
 				return 0;
 			}
 		}
@@ -188,11 +188,11 @@
 		$mismatch=0;
 		//On parcourt le deck, dès qu'on trouve la carte 1 et la carte 2, on les déselectionne ( retourne )
 		for($i=0;isset($deck[$i]);$i++){
-			if($deck[$i]->get_value()==$card1){
-				$deck[$i]->unselect_card();
+			if($deck[$i]->getValue()==$card1){
+				$deck[$i]->unselectCard();
 			}
-			if($deck[$i]->get_value()==$card2){
-				$deck[$i]->unselect_card();
+			if($deck[$i]->getValue()==$card2){
+				$deck[$i]->unselectCard();
 			}
 		}
 		//On remet à 0 les cartes 1 et 2 en mémoire
@@ -205,8 +205,8 @@
 		//On sélectionne la carte jouée dans le deck ( on la retourne face recto )
 		for($i=0;isset($deck[$i]);$i++){
 			//Si la valeur envoyée par l'utilisateur correspond à la valeur de l'une des cartes du deck
-			if($deck[$i]->get_value()==$sent_value){
-				$deck[$i]->select_card();
+			if($deck[$i]->getValue()==$sent_value){
+				$deck[$i]->selectCard();
 			}
 		}
 
@@ -222,8 +222,8 @@
 			//On attribue la valeur envoyée par l'utilisateur à la carte 2 en mémoire
 			$card2=$sent_value;
 			for($i=0;isset($deck[$i]);$i++){
-				if($deck[$i]->get_value()==$sent_value){
-					$deck[$i]->select_card();
+				if($deck[$i]->getValue()==$sent_value){
+					$deck[$i]->selectCard();
 				}
 			}
 			//On vérifie qu'il y a bien une carte 1 et 2 en mémoire

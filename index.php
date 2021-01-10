@@ -17,17 +17,17 @@
 	//Si l'utilisateur essaie de s'inscrire
 	if(isset($_POST['login']) && $_POST['login'] && isset($_POST['password']) 
 		&& $_POST['password'] && isset($_POST['vpassword']) && $_POST['vpassword']){
-		$_SESSION['user']=new user($_POST['login'], $_POST['password'], $_POST['vpassword']);
-		$_SESSION['user']->create_user();
+		$_SESSION['user']=new User($_POST['login'], $_POST['password'], $_POST['vpassword']);
+		$_SESSION['user']->createUser();
 		unset($_SESSION['user']);
 	}
 
 	//Si l'utilisateur essaie de se connecter
 	if(isset($_POST['clogin']) && $_POST['clogin'] && isset($_POST['cpassword']) && $_POST['cpassword']){
-		$_SESSION['user']=new user($_POST['clogin'], $_POST['cpassword'], NULL);
-		$_SESSION['user']->log_user($_SESSION['connected']);
+		$_SESSION['user']=new User($_POST['clogin'], $_POST['cpassword'], NULL);
+		$_SESSION['user']->logUser($_SESSION['connected']);
 		if(isset($_SESSION['connected']) && $_SESSION['connected']=='success'){
-			$_SESSION['login']=$_SESSION['user']->get_login();
+			$_SESSION['login']=$_SESSION['user']->getLogin();
 		}
 	}
 
@@ -115,7 +115,7 @@
 		//On retire les données envoyées par l'utilisateur
 		if(verify_game($_SESSION['deck']) && isset($_SESSION['connected']) && $_SESSION['connected']=='success' 
 		&& isset($_SESSION['login']) && $_SESSION['login'] && (!isset($_SESSION['invite']) || !$_SESSION['invite'])){
-			$_SESSION['user']->store_game($_SESSION['level'], $_SESSION['play_count'], $_SESSION['log_time']);
+			$_SESSION['user']->storeGame($_SESSION['level'], $_SESSION['play_count'], $_SESSION['log_time']);
 		}
 		unset($_POST);
 	}
@@ -129,7 +129,7 @@
 					$_SESSION['play_count'], $_SESSION['mismatch']);
 		}
 		for($i=0;isset($_SESSION['deck'][$i]);$i++){
-			$_SESSION['deck'][$i]->unselect_card();
+			$_SESSION['deck'][$i]->unselectCard();
 		}
 		unset($_SESSION['card1'], $_SESSION['card2']);
 	}
@@ -281,25 +281,25 @@
 							//On parcourt les cartes du plateau tant qu'elles existent
 							for($i=0;isset($_SESSION['deck'][$i]);$i++){
 								//On créé une div pour chaque carte existante
-								?><div class="card" id="div_card<?php echo $_SESSION['deck'][$i]->get_value();?>">
+								?><div class="card" id="div_card<?php echo $_SESSION['deck'][$i]->getValue();?>">
 									<form action="index.php" method="post">
 										<!--La valeur de la carte récupérée dans la classe-->
 										<input type="checkbox" 
 										name="card_value" 
-										value="<?php echo intval($_SESSION['deck'][$i]->get_value())?>" checked hidden>
+										value="<?php echo intval($_SESSION['deck'][$i]->getValue())?>" checked hidden>
 										<?php 
 										//Si la carte est face verso
-										if($_SESSION['deck'][$i]->get_state()=='verso'){
+										if($_SESSION['deck'][$i]->getState()=='verso'){
 											?>
 											<!--Alors son id vaut '?'-->
 											<input type="submit" id="?" value="">
 											<?php
 										}
 										//Sinon si la carte est face recto
-										else if($_SESSION['deck'][$i]->get_state()=='recto'){
+										else if($_SESSION['deck'][$i]->getState()=='recto'){
 											?>
 											<!--Alors son id vaut la valeur de la carte récupérée dans la classe-->
-											<input type="submit" id="<?php echo intval($_SESSION['deck'][$i]->get_value())?>" value="" disabled>
+											<input type="submit" id="<?php echo intval($_SESSION['deck'][$i]->getValue())?>" value="" disabled>
 											<style>
 												<?php 
 												//Pour afficher les bonnes images sur les cartes, on cherche à savoir si sa valeur
@@ -313,18 +313,18 @@
 												//à la valeur de la carte pour obtenir la même image que son clone
 												//Exemple : Sur un jeu à 8 paires, la carte 5 aura un design de chat. 
 												//La carte 13 aura également un design de chat (13-8=5)
-												if(intval($_SESSION['deck'][$i]->get_value())<=$_SESSION['level']){
+												if(intval($_SESSION['deck'][$i]->getValue())<=$_SESSION['level']){
 													?>
-													input[id="<?php echo intval($_SESSION['deck'][$i]->get_value())?>"]{
-														background:url('assets/card<?php echo intval($_SESSION['deck'][$i]->get_value())?>');
+													input[id="<?php echo intval($_SESSION['deck'][$i]->getValue())?>"]{
+														background:url('assets/card<?php echo intval($_SESSION['deck'][$i]->getValue())?>');
 														background-size:100%;
 													}
 													<?php
 												}
-												else if(intval($_SESSION['deck'][$i]->get_value())>$_SESSION['level']){
-													$temp_val=intval($_SESSION['deck'][$i]->get_value())-$_SESSION['level'];
+												else if(intval($_SESSION['deck'][$i]->getValue())>$_SESSION['level']){
+													$temp_val=intval($_SESSION['deck'][$i]->getValue())-$_SESSION['level'];
 													?>
-													input[id="<?php echo intval($_SESSION['deck'][$i]->get_value())?>"]{
+													input[id="<?php echo intval($_SESSION['deck'][$i]->getValue())?>"]{
 														background:url('assets/card<?php echo $temp_val?>');
 														background-size:100%;
 													}<?php

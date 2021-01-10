@@ -2,32 +2,32 @@
 
 	require_once 'functions.php';
 
-	class card{
+	class Card{
 		public $state='verso';
 		public $value;
 
-		public function send_value($value){
+		public function sendValue($value){
 			$this->value=$value;
 		}
 
-		public function get_value(){
+		public function getValue(){
 			return $this->value;
 		}
 
-		public function get_state(){
+		public function getState(){
 			return $this->state;
 		}
 
-		public function select_card(){
+		public function selectCard(){
 			$this->state='recto';
 		}
 
-		public function unselect_card(){
+		public function unselectCard(){
 			$this->state='verso';
 		}
 	}
 
-	class user{
+	class User{
 		private $id;
 		private $login;
 		private $password;
@@ -40,7 +40,7 @@
 			$this->vpassword=$vpassword;
 		}
 
-		public function create_user(){
+		public function createUser(){
 			//On se connecte à la base de données
 			$db=connect_to('memorydb', 'users');
 			//On vérifie l'input utilisateur
@@ -73,7 +73,7 @@
 
 		//Connecte l'utilisateur
 		//Cherche l'existence du login et vérifie le mot de passe associé
-		public function log_user(&$connect){
+		public function logUser(&$connect){
 			$db=connect_to('memorydb', 'users');
 			$temp_login=strtolower($this->login);
 			if($result=look_for($temp_login,$db)){
@@ -87,7 +87,7 @@
 		}
 
 		//Enregistre le score de l'utilisateur
-		public function store_game($level,$counter,$time){
+		public function storeGame($level,$counter,$time){
 			$db=connect_to2('memorydb', 'games');
 			$login=strtolower($this->login);
 			$played=array_key_last($time)-array_key_first($time);
@@ -101,11 +101,11 @@
 			update_rankings();
 		}
 
-		public function get_login(){
+		public function getLogin(){
 			return $this->login;
 		}
 
-		public function get_score(){
+		public function getScore(){
 			return $this->score;
 		}
 	}
