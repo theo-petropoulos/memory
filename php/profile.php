@@ -35,27 +35,44 @@
 		</header>
 
 		<main>
-			<body>
+			<body id="body_profile">
 				<?php 
 					if(isset($login) && $login){
 						?>
-						<p>Nombre de parties jouées</p>
+						<h3>Nombre de parties jouées:</h3><p>
 						<?php 
 							echo $db->num_rows;
-						?>
-						<p>Mes 3 dernières parties</p>
-						<?php
-							for($i=0;($i<3 && $i<$db->num_rows);$i++){
-								$result[]=$db->fetch_assoc();
-							}
-							var_dump($result);
-						?>
-						<p>Mon score moyen</p>
+						?></p>
+						<h3>Mes 3 dernières parties:</h3>
+							<table id="profile_table">
+								<tr id="col_names">
+									<td>Difficulté</td>
+									<td>Coups</td>
+									<td>Secondes</td>
+								</tr>
+								<?php
+								for($i=0;($i<3 && $i<$db->num_rows);$i++){
+									$result[]=$db->fetch_assoc();
+									?><tr>
+										<td>
+											<?php echo $result[$i]['difficulty'];?>
+										</td>
+										<td>
+											<?php echo $result[$i]['moves'];?>
+										</td>
+										<td>
+											<?php echo $result[$i]['played'];?>
+										</td>
+									</tr>
+									<?php	
+								}
+						?></table>
+						<h3>Mon score moyen:</h3><p>
 						<?php
 							$score=($conn->query("SELECT score FROM `users` WHERE login='$login'"))->fetch_assoc();
 							echo $score['score'];
-						?>
-						<p>Ma vitesse moyenne</p>
+						?></p>
+						<h3>Ma vitesse moyenne</h3><p>
 						<?php 
 							$db=$conn->query("SELECT played,moves FROM `games` WHERE login='$login'");
 							$speed=0;
@@ -64,6 +81,7 @@
 								$speed=$speed+($result['moves']/$result['played']);
 							}
 							echo round($speed/$i,3) . " coups par seconde<br>";
+						?></p><?php
 					}
 					else{
 						die("Vous ne pouvez pas afficher ce contenu.");

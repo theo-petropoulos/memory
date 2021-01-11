@@ -47,6 +47,7 @@ form{
 	min-width:500px;
 	flex-wrap:wrap;
 	justify-content: center;
+	margin-bottom:1%;
 }
 
 #game_area form{
@@ -176,6 +177,42 @@ footer{
 
 #acc_link:hover{
 	background:#D5D5D5;
+}
+
+/**PROFILE**/
+
+#body_profile{
+}
+
+#body_profile main{
+	width:50%;
+	min-width:300px;
+}
+
+#body_profile h3{
+	background:#569C90;
+	color:#E7D0B0;
+	padding:0.5% 3% 0.5% 3%;
+	border:2px solid #E7D0B0;
+}
+
+#body_profile table{
+	border-collapse:collapse;
+	text-align:center;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+#body_profile td{
+	border:3px solid black;
+	font-family:'Yusei Magic';
+	text-shadow:1px 0 black, 0 1px black, -1px 0 black, 0 -1px black;
+	background:#E7D6B6;
+}
+
+#col_names td{
+	background:#AE9870;
+	padding:10px;
 }
 
 </style>

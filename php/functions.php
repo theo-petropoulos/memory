@@ -261,12 +261,14 @@
 
 	function ai_play(&$deck, &$memory, $level, $time, &$match_found, &$card1, &$card2, &$play_count, &$mismatch){
 		//Tant que la condition de fin de partie est nulle
-		$i=$j=1;
-		//Tant qu'il existe une carte $i en mémoire et qu'aucune paire n'a été trouvée
+		$i=1;
+		$j=2;
+		//S'il existe une mémoire
 		if(isset($memory[$i]) && $memory[$i]){
-			while(isset($memory[$i])){
+			//Tant qu'il existe une carte $i en mémoire et qu'aucune paire n'a été trouvée
+			while(isset($memory[$i]) && $memory[$i]){
 				//On parcourt une deuxième fois la mémoire pour trouver une paire
-				while(isset($memory[$j])){
+				while(isset($memory[$j+1]) && $memory[$j]){
 					//Si une paire est trouvée, on initialise la variable match_found pour sortir de la boucle
 					//On met en mémoire temporaire les 2 cartes de la paire
 					if( ($memory[$i]+$level)==$memory[$j] ||
@@ -291,7 +293,7 @@
 			}
 		}
 
-		//Si aucune paire n'a été trouvée, on joue une carte qui n'a pas encore été jouée
+		//Si aucune paire n'a été trouvée ou qu'il n'existe pas de mémoire, on joue une carte qui n'a pas encore été jouée
 		if(!isset($match_found) || !$match_found){
 			for($i=1;isset($memory[$i]);$i++){
 			}

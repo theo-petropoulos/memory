@@ -98,6 +98,7 @@
 	if(isset($_SESSION['mismatch']) && $_SESSION['mismatch']==1 && isset($_SESSION['card1']) && isset($_SESSION['card2']) 
 	&& in_array($_SESSION['card1'], range(1,2*$_SESSION['level'])) && in_array($_SESSION['card2'], range(1,2*$_SESSION['level']))){
 		//On retourne les deux cartes côté verso
+		echo "MISMATCH";
 		unset_cards($_SESSION['deck'], $_SESSION['card1'], $_SESSION['card2'], $_SESSION['mismatch']);
 	}
 
