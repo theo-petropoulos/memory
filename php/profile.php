@@ -2,7 +2,7 @@
 	require_once 'functions.php';
 	$conn=connect_to('memorydb', '');
 	if(isset($_GET['menu6']) && $_GET['menu6']){
-		if(look_for($_GET['menu6'], $conn)){
+		if(look_for(strtolower($_GET['menu6']), $conn)){
 			$login=$_GET['menu6'];
 			$db=$conn->query("SELECT * FROM `games` WHERE login='$login' ORDER BY id DESC");
 		}

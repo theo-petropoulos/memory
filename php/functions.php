@@ -5,34 +5,31 @@
 	//Créé la table 'users' si elle n'existe pas encore dans $db
 	//Retourne la connexion à $db
 	function connect_to($db, $table){
-		if(mysqli_connect('localhost','root','',$db)){
-			$conn=new mysqli('localhost', 'root', '', $db);
-			if(!$conn->query("SELECT * FROM `$table`")){
-				$conn->query("
-						CREATE TABLE IF NOT EXISTS `$table` (
-						id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-						login VARCHAR(255) NOT NULL,
-						password VARCHAR(255) NOT NULL,
-						score INT(5)
-						)");
-			}
+		$link=mysqli_connect('localhost', 'root', '');
+		if(mysqli_select_db($link,$db)){
+			$conn=mysqli_connect('localhost', 'root', '', $db);
+			$conn->query("
+					CREATE TABLE IF NOT EXISTS `$table` (
+					id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+					login VARCHAR(255) NOT NULL,
+					password VARCHAR(255) NOT NULL,
+					score INT(5)
+					)
+					");
 			return $conn;
 		}
 
 		else{
-			$conn = mysqli_connect('localhost', 'root', '');
-
-			if($conn){}
-			else if(!$conn){
+			if(!$link){
 				die("ERROR: Could not connect. " . mysqli_connect_error());
 			}
-			if(!mysqli_select_db($conn, $db)){
+			if(!mysqli_select_db($link, $db)){
 				$sql='CREATE DATABASE memorydb';
-				if(!$conn->query($sql)){
+				if(!$link->query($sql)){
 					die("ERROR: Could not create database" . mysqli_error() . "<br>");
 				}
 			}
-			if(mysqli_select_db($conn, $db)){
+			if(mysqli_select_db($link, $db)){
 				$conn=mysqli_connect('localhost', 'root', '', $db);
 				if(!$conn){
 					die("ERROR: Could not connect. " . mysqli_connect_error());
@@ -56,26 +53,24 @@
 	//Créé la table 'users' si elle n'existe pas encore dans $db
 	//Retourne la connexion à $db
 	function connect_to2($db, $table){
-		if(mysqli_connect('localhost','root','',$db)){
-			$conn=new mysqli('localhost', 'root', '', $db);
-			if(!$conn->query("SELECT * FROM `$table`")){
-				$conn->query("
-						CREATE TABLE IF NOT EXISTS `$table` (
-						id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-						login VARCHAR(255) NOT NULL,
-						difficulty INT(2) NOT NULL,
-						moves INT(3),
-						played INT(4)
-						)");
-			}
+		$link=mysqli_connect('localhost', 'root', '');
+		if(mysqli_select_db($link,$db)){
+			$conn=mysqli_connect('localhost', 'root', '', $db);
+			$conn->query("
+					CREATE TABLE IF NOT EXISTS `$table` (
+					id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+					login VARCHAR(255) NOT NULL,
+					difficulty INT(2) NOT NULL,
+					moves INT(3),
+					played INT(4)
+					)");
 			return $conn;
 		}
 
 		else{
 			$conn = mysqli_connect('localhost', 'root', '');
 
-			if($conn){}
-			else if(!$conn){
+			if(!$conn){
 				die("ERROR: Could not connect. " . mysqli_connect_error());
 			}
 			if(!mysqli_select_db($conn, $db)){
