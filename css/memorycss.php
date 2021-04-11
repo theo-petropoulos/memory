@@ -8,8 +8,7 @@
 
 body{
 	cursor:url('../assets/cursor1.png'), auto;
-	background-image:url(../assets/bg2.jpg);
-	background-size:100%;
+	background:#13121D;
 	position:relative;
 	display:flex;
 	flex-direction:column;
@@ -65,17 +64,16 @@ form{
 .menu_submit{
 	width:15%;
 	min-width:180px;
-	background-color:#569c90;
+	background-color:#29264E;
 	color:#E7D6C1;
-	border-radius:20px;
 	padding:0.5% 0 0.5% 0;
 	margin-bottom:0.5%;
-	border:5px 0 white;
-	font-family:'Yusei Magic', Courier;
+	border:0px 4px white;
+	font-family:'Lexend', Courier;
 }
 
 .menu_submit:hover{
-	background-color:#6EC7B8;
+	background-color:#4D4987;
 	color:white;
 }
 
@@ -107,14 +105,14 @@ input[type=text], input[type=password], input[type="number"]{
 }
 
 label{
-	font-family:'Yusei Magic', Courier;
+	font-family:'Lexend', Courier;
 	font-size:1.5em;
 	color:#E2CBAA;
 	text-shadow:0 1px black, 1px 0 black, -1px 0 black, 0 -1px black;
 }
 
 h1,h2,h3, p{
-	font-family:'Yusei Magic', Courier;
+	font-family:'Lexend', Courier;
 	color:white;
 	text-shadow:0 1px black, 1px 0 black, -1px 0 black, 0 -1px black;
 }
@@ -165,7 +163,7 @@ footer{
 }
 
 #acc_link{
-	font-family:'Yusei Magic', Courier;
+	font-family:'Lexend', Courier;
 	color:white;
 	font-size:1.5em;
 	text-decoration:none;
@@ -205,7 +203,7 @@ footer{
 
 #body_profile td{
 	border:3px solid black;
-	font-family:'Yusei Magic';
+	font-family:'Lexend';
 	text-shadow:1px 0 black, 0 1px black, -1px 0 black, 0 -1px black;
 	background:#E7D6B6;
 }

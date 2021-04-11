@@ -147,6 +147,7 @@
 		<link rel="icon" href="assets/back.png" />
 		<script src="https://kit.fontawesome.com/9ddb75d515.js" crossorigin="anonymous"></script>
 		<link rel="preconnect" href="https://fonts.gstatic.com">
+		<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100&family=Nerko+One&display=swap" rel="stylesheet"> 
 		<link href="https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap" rel="stylesheet"> 
 	</head>
 
